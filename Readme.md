@@ -13,10 +13,37 @@ We get the result given below:
 http://bit.ly/3uQqImU 
 
 1. Functional Requirements
-   •	The service should generate a unique and shortened alias for a given long URL.
-   •	When a user accesses a shortened URL, the system must redirect them to the original URL.
+   Generate a unique short URL for a given long URL
+   Redirect the user to the original URL when the short URL is accessed
+
+   Feature:
+   Allow users to customize their short URLs 
+   Support link expiration where URLs are no longer accessible after a certain period
+
 
 2. Non-Functional Requirements
-   •	The system must ensure high availability, as any downtime would disrupt URL redirections.
-   •	URL redirection should occur in real-time with minimal latency.
-   •	The generated short links should be unpredictable to prevent guessing patterns.
+   High availability 
+   Low latency 
+   Scalability
+   Durability
+   
+
+3. High Level Design:
+
+   Load Balancer: Distributes incoming requests across multiple application servers
+   Application Servers: Handles incoming requests for shortening URLs and redirecting users
+   URL Generation Service: Generates short URLs.
+   Redirection Service: Redirects the users to the original URL.
+   Database: Stores mappings between short URLs and long URLs.
+   Cache: Stores frequently accessed URL mappings for faster retrieval.
+
+4. Database Design
+   
+   We need to store billions of records 
+   Most database operations are simply key value lookups 
+   Read Queries are much higher than write queries 
+   We dont need joins between tables
+   database needs to be highly scalable and available
+
+
+
