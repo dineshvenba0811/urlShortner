@@ -45,5 +45,9 @@ http://bit.ly/3uQqImU
    We dont need joins between tables
    database needs to be highly scalable and available
 
+5. URL Shortening API
+
+
+
 
 
