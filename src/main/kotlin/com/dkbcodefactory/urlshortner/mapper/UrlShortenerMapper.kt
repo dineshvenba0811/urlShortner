@@ -28,8 +28,8 @@ object UrlShortenerMapper {
     fun toDTO(shortUrl: String, longUrlHash: String, originalLongUrl: String, prefix: String): UrlShortenerResponseDto {
         return UrlShortenerResponseDto(
             shortUrl = prefix + shortUrl,
-            longUrl = longUrlHash,
-            longUrlHash = originalLongUrl,
+            longUrl = originalLongUrl,
+            longUrlHash = longUrlHash,
         )
     }
 
