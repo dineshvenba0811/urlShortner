@@ -3,24 +3,33 @@ package com.dkbcodefactory.urlshortner.mapper
 import com.dkbcodefactory.urlshortner.dto.UrlShortenerRequestDto
 import com.dkbcodefactory.urlshortner.dto.UrlShortenerResponseDto
 import com.dkbcodefactory.urlshortner.entity.UrlShortenerEntity
+import org.springframework.beans.factory.annotation.Value
 import java.time.LocalDate
 
 object UrlShortenerMapper {
 
     // DTO to Entity
-    fun toEntity(dto: UrlShortenerRequestDto, shortUrl: String): UrlShortenerEntity {
+    fun toEntity(originalLongUrl: String, shortUrl: String, hashLongUrl: String): UrlShortenerEntity {
         return UrlShortenerEntity(
             shortUrl = shortUrl,
-            originUrl = dto.originUrl,
-            createdAt = LocalDate.now(),
+            longUrl = originalLongUrl,
+            longUrlHash = hashLongUrl,
         )
     }
 
-    fun toDTO(entity: UrlShortenerEntity): UrlShortenerResponseDto {
+    fun toDTOFromEntity(savedEntity: UrlShortenerEntity, prefix: String): UrlShortenerResponseDto {
         return UrlShortenerResponseDto(
-            shortUrl = entity.shortUrl,
-            originUrl = entity.originUrl,
-            createdAt = entity.createdAt,
+            shortUrl = prefix + savedEntity.shortUrl,
+            longUrl = savedEntity.longUrl,
+            longUrlHash = savedEntity.longUrlHash,
+        )
+    }
+
+    fun toDTO(shortUrl: String, longUrlHash: String, originalLongUrl: String, prefix: String): UrlShortenerResponseDto {
+        return UrlShortenerResponseDto(
+            shortUrl = prefix + shortUrl,
+            longUrl = longUrlHash,
+            longUrlHash = originalLongUrl,
         )
     }
 
