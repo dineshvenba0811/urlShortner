@@ -137,3 +137,5 @@ http://bit.ly/3uQqImU
    Collision Resolution Strategies by Incremental Suffix
    Async Event driven mechanism instead of batch operation to insert data into two tables.
 
+
+![](/Users/dineshkumar/Downloads/HLD.png)
