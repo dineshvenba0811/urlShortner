@@ -7,14 +7,22 @@ able to resolve the full URL.
 
 
 For example :
-https://www.linkedin.com/in/dineshkumarchandrasekar081094/
+   "longUrl": "https://www.cricbuzz.com/live-cricket-scorecard/115014/"
 
 We get the result given below:
-http://bit.ly/3uQqImU 
+   "shortUrl": "https://short.url.com/3jtoN7z",
 
 1. Functional Requirements
-   Generate a unique short URL for a given long URL
-   Redirect the user to the original URL when the short URL is accessed
+   As MVP , implemented the following requirements
+      Generate a unique short URL for a given long URL
+      Redirect the user to the original URL when the short URL is accessed
+
+   Future Enhancement:
+      Caching using Redis
+      Allow users to customize their short URLs.
+      Support link expiration where URLs are no longer accessible after a certain period.
+      Collision Resolution Strategies by Incremental Suffix
+      Async Event driven mechanism instead of batch operation to insert data into two tables.
 
 2. Non-Functional Requirements
    High availability 
@@ -63,6 +71,12 @@ http://bit.ly/3uQqImU
    }
    
    Sample Response:
+
+   {
+   "shortUrl": "https://short.url.com/3jtoN7z",
+   "longUrl": "https://www.cricbuzz.com/live-cricket-scorecard/115014/",
+   "longUrlHash": "7ae535601850a8ae43fc32c9d96a91c0"
+   }
 
    Endpoint: GET /{shortUrlKey}
 
@@ -130,12 +144,20 @@ http://bit.ly/3uQqImU
    
         Redirection: Once the long URL is retrieved, the service issues an HTTP redirect response, sending the user to the original URL.
 
+Test cases are covered for the below cases using Junit testing and Integration Testing
 
-8. Future Enhancement:
-   Allow users to customize their short URLs.
-   Support link expiration where URLs are no longer accessible after a certain period.
-   Collision Resolution Strategies by Incremental Suffix
-   Async Event driven mechanism instead of batch operation to insert data into two tables.
+Junit
+
+   getOriginalUrl should throw UrlNotFoundException when entity is not found
+   getOriginalUrl should return DTO when entity is found
+   getShortUrl returns existing DTO when mapping exists
+   getShortUrl creates new mapping when none exists
+   getShortUrl throws UrlGenerationException when batch execution fails
+
+Integration
+
+   should save and retrieve UrlShortenerEntity from Cassandra
+
 
 
 ![](/Users/dineshkumar/Downloads/HLD.png)
