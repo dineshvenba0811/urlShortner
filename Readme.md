@@ -158,6 +158,7 @@ Integration
 
    should save and retrieve UrlShortenerEntity from Cassandra
 
+![HLD](https://github.com/user-attachments/assets/499f2952-9a2a-490c-8e73-e8361440bdb4)
 
 
 ![](/Users/dineshkumar/Downloads/HLD.png)
