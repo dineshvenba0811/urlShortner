@@ -1,0 +1,72 @@
+version: '3.8'
+
+services:
+  cassandra:
+    image: cassandra:latest
+    container_name: cassandra
+    environment:
+      - CASSANDRA_DC=datacenter1
+    ports:
+      - "9042:9042"
+    volumes:
+      - ./init-keyspace.cql:/scripts/init-keyspace.cql
+      - ./init.sh:/scripts/init.sh
+    entrypoint: ["/bin/bash", "-c", "/usr/local/bin/docker-entrypoint.sh & sleep 60 && /scripts/init.sh && wait"]
+    healthcheck:
+      test: [ "CMD-SHELL", "cqlsh -e 'describe keyspaces;'" ]
+      interval: 15s
+      timeout: 10s
+      retries: 10
+      start_period: 60s
+    networks:
+      - app-network
+
+  urlshortner:
+    build: .
+    container_name: urlshortner
+    depends_on:
+      cassandra:
+        condition: service_healthy
+    restart: always
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_APPLICATION_NAME=urlshortner
+      - SPRING_CASSANDRA_SCHEMA_ACTION=CREATE_IF_NOT_EXISTS
+      - SPRING_CASSANDRA_REQUEST_TIMEOUT=10s
+      - SPRING_CASSANDRA_CONNECTION_CONNECT_TIMEOUT=10s
+      - SPRING_CASSANDRA_CONNECTION_INIT_QUERY_TIMEOUT=10s
+      - SPRING_CASSANDRA_LOCAL_DATACENTER=datacenter1
+      - SPRING_CASSANDRA_KEYSPACE_NAME=spring_cassandra
+      - SPRING_CASSANDRA_CONTACT_POINTS=cassandra
+      - SPRING_CASSANDRA_PORT=9042
+      - SHORT_URL_PREFIX=https://short.url.com/
+      - LOGGING_LEVEL_ORG_SPRINGFRAMEWORK_DATA_CASSANDRA=DEBUG
+      - MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE=health,info,prometheus
+      - MANAGEMENT_PROMETHEUS_METRICS_EXPORT_ENABLED=true
+    networks:
+      - app-network
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    networks:
+      - app-network
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    depends_on:
+      - prometheus
+    ports:
+      - "3000:3000"
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
