@@ -6,6 +6,10 @@ in our system. And the other way around of course, meaning that a user should be
 able to resolve the full URL.
 
 
+Run the project using following command:
+
+docker compose up --build
+
 For example :
    "longUrl": "https://www.cricbuzz.com/live-cricket-scorecard/115014/"
 
